@@ -1,0 +1,273 @@
+============================================================
+vLLM Worker Structured Outputs Test Suite
+============================================================
+Output file: test_results_20251115_151101.txt
+============================================================
+
+Running 37 tests in parallel batches of 10...
+
+============================================================
+Checking Results
+============================================================
+✅ Structured Outputs (No System Message): PASSED - Got response
+   Response is valid JSON: ['question', 'reasoning']
+✅ JSON Nested Object with Array: PASSED - Got response
+   Response is valid JSON: ['character']
+✅ Guided JSON Rejection: PASSED - Correctly rejected deprecated API
+✅ JSON Enum and Number Constraints: PASSED - Got response
+   Response is valid JSON: ['confidence', 'status']
+✅ Basic Response: PASSED - Got response
+   Response text:  "Hello, nice to meet you!"...
+✅ Field Order Enforcement: PASSED - Got response
+   Response is valid JSON: ['question', 'reasoning']
+✅ YAML Conflict Test: PASSED - Got response
+   Response is valid JSON: ['question', 'reasoning']
+✅ Basic Response (No Structured Outputs): PASSED - Got response
+   Response text:  Hello World! How can I help you today?...
+✅ Structured Outputs (New API): PASSED - Got response
+   Response is valid JSON: ['question', 'reasoning']
+✅ JSON Array with Number Field: PASSED - Got response
+   Response text: {
+  "steps": [
+    "step1: Gathering ingredients and equipment",
+    "step2: Measuring and grinding coffee beans",
+    "step3: Boiling water",
+    "step4: Preparing the coffee maker or brewing method"...
+✅ Choice Pattern (yes/no): PASSED - Valid choice (yes/no)
+   Got: yes
+✅ JSON Object Pattern (No Schema): PASSED - Got response
+   Response text:  Certainly! Below is an example of a JSON object:
+
+```json
+{
+  "name": "John Doe",
+...
+✅ JSON with Optional Fields: PASSED - Got response
+   Response text: {
+  "required_field": "Your input here for the required field."
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+...
+✅ JSON Simple Required Fields: PASSED - Got response
+   Response is valid JSON: ['a', 'b']
+✅ Guided JSON with LM Format Enforcer (Deprecated): PASSED - Correctly rejected deprecated API
+✅ Regex Pattern (name-1234): PASSED - Matches pattern word-1234
+   Got: email-1234
+✅ Grammar Pattern (SQL Query): PASSED - Valid SQL query
+   Got: SELECT name FROM users WHERE name = 'John'...
+✅ JSON Nested Array of Objects: PASSED - Got response
+   Response is valid JSON: ['steps']
+✅ YAML System Message with JSON Output: PASSED - Got response
+   Response text: {"question": "When was the Eiffel Tower completed and for what event?"
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+...
+✅ Guided JSON with Outlines (Deprecated): PASSED - Correctly rejected deprecated API
+✅ Regex Single Word Pattern: PASSED - Matches regex ^[a-z]+$
+   Got: aloneorsoloorjustsoloorbyitselfalonealonealonealon...
+✅ Grammar Pattern with SQL Conflict: PASSED - Valid SQL query
+   Got: SELECT name FROM users WHERE name = 'John'...
+✅ JSON Boolean Field: PASSED - Got response
+   Response text: {"message": "The provided text does not contain a question or a statement that requires evaluation. However, I can interpret your request as asking for confirmation of the successful conversion of pla...
+✅ JSON Object Pattern with Text Conflict: PASSED - Got response
+   Response text:  Certainly! Here's an example of a simple JSON object:
+
+```json
+{
+  "name": "John Doe",
+  "age": 30,
+  "isEmployed": true,...
+✅ JSON Fixed-Length Array: PASSED - Got response
+   Response text: ["red", "blue", "green"]...
+✅ JSON Number Constraints: PASSED - Got response
+   Response is valid JSON: ['number']
+✅ Regex Email Format: PASSED - Matches email format
+   Got: username@example.com.combining-the-username-part-w...
+✅ Regex Date Format (YYYY-MM-DD): PASSED - Matches date format YYYY-MM-DD
+   Got: 2024-11-15
+✅ Structural Tag (JSON within tags): PASSED - Response contains valid JSON in tags
+   JSON keys: ['city']
+✅ Regex Pattern with Email Conflict: PASSED - Matches pattern word-1234 (constraint won over email prompt)
+   Got: userid-1234
+✅ Choice Constraint vs Contradictory Prompt: PASSED - Got response
+   Response text: yes...
+✅ Regex Constraint vs Contradictory Prompt: PASSED - Got response
+   Response text: worldhellooutputsyntaxerrorinvalidinputrequestforadditionalinformationpleaseclarifyinstructionrequirementisforexactphrasewithspacehelloworldnoadditionaltextorsymbolsexpectedoutputonlyhelloworldwithout...
+✅ Grammar Constraint vs Contradictory Prompt: PASSED - Got response
+   Response text: SELECT name FROM users...
+✅ Regex UUID Format: PASSED - Matches UUID format
+   Got: c9b7e77b-b6f9-4f9b-8b6d-1a9e2b5a6c4f
+✅ Regex Phone Format (+1-XXX-XXX-XXXX): PASSED - Matches phone format +1-XXX-XXX-XXXX
+   Got: +1-234-567-8900
+✅ JSON Constraint vs Contradictory Prompt: PASSED - Got response
+   Response is valid JSON: ['age', 'name']
+✅ Structural Tag Constraint vs Contradictory Prompt: PASSED - Constraint enforced (valid JSON within tags despite prompt asking for plain text)
+   JSON keys: ['city']
+
+============================================================
+Test Summary
+============================================================
+✅ PASS: Structured Outputs (No System Message)
+✅ PASS: JSON Nested Object with Array
+✅ PASS: Guided JSON Rejection
+✅ PASS: JSON Enum and Number Constraints
+✅ PASS: Basic Response
+✅ PASS: Field Order Enforcement
+✅ PASS: YAML Conflict Test
+✅ PASS: Basic Response (No Structured Outputs)
+✅ PASS: Structured Outputs (New API)
+✅ PASS: JSON Array with Number Field
+✅ PASS: Choice Pattern (yes/no)
+✅ PASS: JSON Object Pattern (No Schema)
+✅ PASS: JSON with Optional Fields
+✅ PASS: JSON Simple Required Fields
+✅ PASS: Guided JSON with LM Format Enforcer (Deprecated)
+✅ PASS: Regex Pattern (name-1234)
+✅ PASS: Grammar Pattern (SQL Query)
+✅ PASS: JSON Nested Array of Objects
+✅ PASS: YAML System Message with JSON Output
+✅ PASS: Guided JSON with Outlines (Deprecated)
+✅ PASS: Regex Single Word Pattern
+✅ PASS: Grammar Pattern with SQL Conflict
+✅ PASS: JSON Boolean Field
+✅ PASS: JSON Object Pattern with Text Conflict
+✅ PASS: JSON Fixed-Length Array
+✅ PASS: JSON Number Constraints
+✅ PASS: Regex Email Format
+✅ PASS: Regex Date Format (YYYY-MM-DD)
+✅ PASS: Structural Tag (JSON within tags)
+✅ PASS: Regex Pattern with Email Conflict
+✅ PASS: Choice Constraint vs Contradictory Prompt
+✅ PASS: Regex Constraint vs Contradictory Prompt
+✅ PASS: Grammar Constraint vs Contradictory Prompt
+✅ PASS: Regex UUID Format
+✅ PASS: Regex Phone Format (+1-XXX-XXX-XXXX)
+✅ PASS: JSON Constraint vs Contradictory Prompt
+✅ PASS: Structural Tag Constraint vs Contradictory Prompt
+
+Total: 37/37 tests passed
+
+Results saved to: test_results_20251115_151101.txt
