@@ -101,9 +101,25 @@ class BatchSize:
             self.current_batch_size = min(self.current_batch_size*self.batch_size_growth_factor, self.max_batch_size)
 
 def create_error_response(message: str, err_type: str = "BadRequestError", status_code: HTTPStatus = HTTPStatus.BAD_REQUEST) -> ErrorResponse:
-    return ErrorResponse(message=message,
-                            type=err_type,
-                            code=status_code.value)
+    # vLLM 0.11.0 ErrorResponse expects error field to be ErrorInfo or dict with message, type, and code
+    # Ensure message is not empty
+    if not message:
+        message = f"{err_type}: An error occurred"
+
+    # Create error dict with all required fields
+    error_dict = {"message": message, "type": err_type, "code": status_code.value}
+
+    # Try to use ErrorInfo if available, otherwise use dict
+    if ErrorInfo is not None:
+        try:
+            error_info = ErrorInfo(message=message, type=err_type, code=status_code.value)
+        except Exception:
+            error_info = error_dict
+    else:
+        error_info = error_dict
+
+    # ErrorResponse needs both error field AND top-level type/code fields
+    return ErrorResponse(error=error_info, type=err_type, code=status_code.value)
 
 def get_int_bool_env(env_var: str, default: bool) -> bool:
     return int(os.getenv(env_var, int(default))) == 1
