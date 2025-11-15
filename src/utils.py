@@ -8,13 +8,8 @@ from vllm.sampling_params import StructuredOutputsParams
 
 try:
     from vllm.utils import random_uuid
-    from vllm.entrypoints.openai.protocol import ErrorResponse
+    from vllm.entrypoints.openai.protocol import ErrorResponse, ErrorInfo
     from vllm import SamplingParams
-    # Try to import ErrorInfo if available
-    try:
-        from vllm.entrypoints.openai.protocol import ErrorInfo
-    except ImportError:
-        ErrorInfo = None
 except ImportError:
     logging.warning("Error importing vllm, skipping related imports. This is ONLY expected when baking model into docker image from a machine without GPUs")
     ErrorInfo = None
@@ -134,24 +129,11 @@ class BatchSize:
             self.current_batch_size = min(self.current_batch_size*self.batch_size_growth_factor, self.max_batch_size)
 
 def create_error_response(message: str, err_type: str = "BadRequestError", status_code: HTTPStatus = HTTPStatus.BAD_REQUEST) -> ErrorResponse:
-    # vLLM 0.11.0 ErrorResponse expects error field to be ErrorInfo or dict with message, type, and code
-    # Ensure message is not empty
+    # vLLM 0.11.0 ErrorResponse expects error field to be ErrorInfo
     if not message:
         message = f"{err_type}: An error occurred"
 
-    # Create error dict with all required fields
-    error_dict = {"message": message, "type": err_type, "code": status_code.value}
-
-    # Try to use ErrorInfo if available, otherwise use dict
-    if ErrorInfo is not None:
-        try:
-            error_info = ErrorInfo(message=message, type=err_type, code=status_code.value)
-        except Exception:
-            error_info = error_dict
-    else:
-        error_info = error_dict
-
-    # ErrorResponse needs both error field AND top-level type/code fields
+    error_info = ErrorInfo(message=message, type=err_type, code=status_code.value)
     return ErrorResponse(error=error_info, type=err_type, code=status_code.value)
 
 def get_int_bool_env(env_var: str, default: bool) -> bool:
