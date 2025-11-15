@@ -7,7 +7,7 @@ from vllm.entrypoints.openai.protocol import RequestResponseMetadata
 
 try:
     from vllm.utils import random_uuid
-    from vllm.entrypoints.openai.protocol import ErrorResponse, ErrorInfo
+    from vllm.entrypoints.openai.protocol import ErrorResponse
     from vllm import SamplingParams
     from vllm.sampling_params import StructuredOutputsParams
 except ImportError:
@@ -101,12 +101,9 @@ class BatchSize:
             self.current_batch_size = min(self.current_batch_size*self.batch_size_growth_factor, self.max_batch_size)
 
 def create_error_response(message: str, err_type: str = "BadRequestError", status_code: HTTPStatus = HTTPStatus.BAD_REQUEST) -> ErrorResponse:
-    # vLLM 0.11.0 ErrorResponse expects error field to be ErrorInfo
-    if not message:
-        message = f"{err_type}: An error occurred"
-
-    error_info = ErrorInfo(message=message, type=err_type, code=status_code.value)
-    return ErrorResponse(error=error_info, type=err_type, code=status_code.value)
+    return ErrorResponse(message=message,
+                            type=err_type,
+                            code=status_code.value)
 
 def get_int_bool_env(env_var: str, default: bool) -> bool:
     return int(os.getenv(env_var, int(default))) == 1
