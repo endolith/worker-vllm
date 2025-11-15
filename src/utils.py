@@ -53,7 +53,7 @@ class JobInput:
         samp_param = job.get("sampling_params", {})
 
         # Reject deprecated old API format (top-level guided_json parameter)
-        # worker-vllm v2.9.5+ updated to vLLM 0.11.0+ which uses
+        # worker-vllm v2.9.5+ updated to vLLM 0.11.0+, which uses
         # OpenAI-compatible extra_body.structured_outputs format
         if job.get("guided_json") is not None:
             raise ValueError(
@@ -68,7 +68,6 @@ class JobInput:
             structured_outputs = extra_body["structured_outputs"]
 
             # Create StructuredOutputsParams instance
-            # Note: Only specify ONE constraint type (json, regex, choice, grammar, etc.)
             if "json" in structured_outputs:
                 samp_param["structured_outputs"] = StructuredOutputsParams(
                     json=structured_outputs["json"]
@@ -85,7 +84,10 @@ class JobInput:
                 samp_param["structured_outputs"] = StructuredOutputsParams(
                     grammar=structured_outputs["grammar"]
                 )
-            # Add other constraint types as needed, but ONLY ONE per request
+            elif "structural_tag" in structured_outputs:
+                samp_param["structured_outputs"] = StructuredOutputsParams(
+                    structural_tag=structured_outputs["structural_tag"]
+                )
 
         # Store for potential use in OpenAI-compatible API
         self.extra_body = extra_body
