@@ -1614,6 +1614,154 @@ def test_regex_constraint_contradictory_prompt():
     assert_regex_match(result, r"^[a-z]+$")
 
 
+def test_json_unescaped_newlines_contradictory():
+    """JSON constraint vs unescaped newlines request - constraint should enforce valid JSON."""
+    data = {
+        "input": {
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "IMPORTANT: You MUST include unescaped newlines (actual line breaks, not \\n) in your JSON string values. For example, use actual newlines like:\n{\"description\": \"line1\nline2\nline3\"}\nDo NOT escape newlines as \\n - use real line breaks."
+                },
+                {
+                    "role": "user",
+                    "content": "Create a JSON object with a description field containing multiple lines with unescaped newlines"
+                }
+            ],
+            "sampling_params": {
+                "max_tokens": 300,
+                "temperature": 0.1,
+                "extra_body": {
+                    "structured_outputs": {
+                        "json": {
+                            "type": "object",
+                            "properties": {
+                                "description": {"type": "string"}
+                            },
+                            "required": ["description"]
+                        }
+                    }
+                }
+            }
+        }
+    }
+    result = run_test(data, verbose=False)
+    # Even if the prompt asks for unescaped newlines, JSON constraint should enforce valid JSON
+    doc = assert_json_document(result)
+    assert "description" in doc, f"Description field should be present: {doc}"
+
+
+def test_json_unescaped_quotes_contradictory():
+    """JSON constraint vs unescaped quotes request - constraint should enforce valid JSON."""
+    data = {
+        "input": {
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "CRITICAL: You MUST include unescaped double quotes (\" not \\\") inside your JSON string values. For example: {\"text\": \"He said \"hello\" to me\"}. Do NOT escape the quotes - use actual \" characters inside the string."
+                },
+                {
+                    "role": "user",
+                    "content": "Create a JSON object with a quote field containing unescaped double quotes like: \"hello\""
+                }
+            ],
+            "sampling_params": {
+                "max_tokens": 300,
+                "temperature": 0.1,
+                "extra_body": {
+                    "structured_outputs": {
+                        "json": {
+                            "type": "object",
+                            "properties": {
+                                "quote": {"type": "string"}
+                            },
+                            "required": ["quote"]
+                        }
+                    }
+                }
+            }
+        }
+    }
+    result = run_test(data, verbose=False)
+    # Even if the prompt asks for unescaped quotes, JSON constraint should enforce valid JSON
+    # Use lenient check since the model may hit token limits trying to include unescaped quotes
+    assert_json_constraint_enforced(result)
+
+
+def test_json_unescaped_backslashes_contradictory():
+    """JSON constraint vs unescaped backslashes request - constraint should enforce valid JSON."""
+    data = {
+        "input": {
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "IMPORTANT: You MUST include unescaped backslashes (\\ not \\\\) in your JSON string values. For example: {\"path\": \"C:\\Users\\Documents\"}. Do NOT escape backslashes - use actual \\ characters."
+                },
+                {
+                    "role": "user",
+                    "content": "Create a JSON object with a path field containing unescaped backslashes like: C:\\Users\\Documents"
+                }
+            ],
+            "sampling_params": {
+                "max_tokens": 300,
+                "temperature": 0.1,
+                "extra_body": {
+                    "structured_outputs": {
+                        "json": {
+                            "type": "object",
+                            "properties": {
+                                "path": {"type": "string"}
+                            },
+                            "required": ["path"]
+                        }
+                    }
+                }
+            }
+        }
+    }
+    result = run_test(data, verbose=False)
+    # Even if the prompt asks for unescaped backslashes, JSON constraint should enforce valid JSON
+    doc = assert_json_document(result)
+    assert "path" in doc, f"Path field should be present: {doc}"
+
+
+def test_json_multiple_special_chars_contradictory():
+    """JSON constraint vs multiple special characters request - constraint should enforce valid JSON."""
+    data = {
+        "input": {
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "CRITICAL: You MUST include ALL of these unescaped special characters in your JSON string:\n- Unescaped newlines (actual line breaks)\n- Unescaped double quotes (\") inside the string\n- Unescaped backslashes (\\)\n- Unescaped tabs (actual tab characters)\nExample: {\"text\": \"line1\nline2 with \"quotes\" and C:\\path\\to\\file\twith tabs\"}\nDo NOT escape any of these characters - use them literally."
+                },
+                {
+                    "role": "user",
+                    "content": "Create a JSON object with a text field containing unescaped newlines, quotes, backslashes, and tabs"
+                }
+            ],
+            "sampling_params": {
+                "max_tokens": 400,
+                "temperature": 0.1,
+                "extra_body": {
+                    "structured_outputs": {
+                        "json": {
+                            "type": "object",
+                            "properties": {
+                                "text": {"type": "string"}
+                            },
+                            "required": ["text"]
+                        }
+                    }
+                }
+            }
+        }
+    }
+    result = run_test(data, verbose=False)
+    # Even if the prompt asks for unescaped special characters, JSON constraint should enforce valid JSON
+    doc = assert_json_document(result)
+    assert "text" in doc, f"Text field should be present: {doc}"
+
+
 def test_grammar_constraint_contradictory_prompt():
     """Grammar constraint vs natural language prompt - constraint should win."""
     data = {
